@@ -5,5 +5,8 @@ export default defineConfig({
     include: ["src/**/*.test.ts"],
     exclude: ["outside-examples/**", "node_modules/**", "dist/**"],
     passWithNoTests: true,
+    coverage: {
+      exclude: ["src/approved-bash.ts", "src/handoff.ts"],
+    },
   },
 });
