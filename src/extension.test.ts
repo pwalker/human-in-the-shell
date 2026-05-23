@@ -1,16 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
-  BUILD_MODE_TOOLS,
-  buildSystemPromptForState,
-  createHitsExtension,
-  createHitsState,
-  formatHitsStatus,
-  getToolsForMode,
-  parseDepth,
-  parseMode,
-  PLAN_MODE_TOOLS,
-  type HitsState,
-} from "./hits-extension.js";
+import { createHitsExtension } from "./extension.js";
+import { type State } from "./policy.js";
 
 type Ctx = {
   hasUI: boolean;
@@ -20,51 +10,16 @@ type Ctx = {
     confirm: (title: string, message: string) => Promise<boolean>;
     select: (title: string, options: string[]) => Promise<string | undefined>;
   };
-  exec: (command: string, args: string[], options?: { timeout?: number }) => Promise<{ stdout: string; stderr: string; code: number }>;
+  exec: (
+    command: string,
+    args: string[],
+    options?: { timeout?: number },
+  ) => Promise<{ stdout: string; stderr: string; code: number }>;
 };
-
-describe("hits extension state", () => {
-  it("defaults to plan mode and outline depth", () => {
-    expect(createHitsState()).toEqual({ mode: "plan", depth: "outline" });
-  });
-
-  it("formats footer status text", () => {
-    const state: HitsState = { mode: "build", depth: "skeleton" };
-    expect(formatHitsStatus(state)).toBe("HITS build / skeleton");
-  });
-
-  it("parses mode and depth values", () => {
-    expect(parseMode("plan")).toBe("plan");
-    expect(parseMode("build")).toBe("build");
-    expect(parseMode("other")).toBeUndefined();
-    expect(parseDepth("sentence")).toBe("sentence");
-    expect(parseDepth("full")).toBe("full");
-    expect(parseDepth("tiny")).toBeUndefined();
-  });
-
-  it("selects tools by mode and installed tools", () => {
-    expect(getToolsForMode("plan", ["read", "grep", "find", "ls", "bash"]))
-      .toEqual([...PLAN_MODE_TOOLS]);
-    expect(getToolsForMode("build", ["read", "grep", "find", "ls", "bash"]))
-      .toEqual(["read", "grep", "find", "ls", "bash"]);
-    expect(getToolsForMode("build", ["read", "grep", "find", "ls", "bash", "request_edit"]))
-      .toEqual([...BUILD_MODE_TOOLS]);
-  });
-
-  it("appends mode-specific prompt instructions", () => {
-    const planPrompt = buildSystemPromptForState({ mode: "plan", depth: "outline" }, "base");
-    const buildPrompt = buildSystemPromptForState({ mode: "build", depth: "paragraph" }, "base");
-    expect(planPrompt).toContain("HITS PLAN MODE");
-    expect(planPrompt).toContain("/mode build");
-    expect(buildPrompt).toContain("HITS BUILD MODE");
-    expect(buildPrompt).toContain("request_edit");
-    expect(buildPrompt).toContain("paragraph");
-  });
-});
 
 describe("createHitsExtension", () => {
   it("registers handlers, commands, and tools with expected behavior", async () => {
-    const state: HitsState = { mode: "plan", depth: "outline" };
+    const state: State = { mode: "plan", depth: "outline" };
     const extension = createHitsExtension(state);
 
     const handlers = new Map<string, (event: unknown, ctx: Ctx) => unknown>();
@@ -74,16 +29,22 @@ describe("createHitsExtension", () => {
     let ctx: Ctx;
 
     const fakeApi = {
-      on: (event: string, handler: (event: unknown, ctx: Ctx) => unknown) => handlers.set(event, handler),
-      registerCommand: (name: string, options: { handler: (args: string, ctx: Ctx) => Promise<void> }) => {
+      on: (event: string, handler: (event: unknown, ctx: Ctx) => unknown) =>
+        handlers.set(event, handler),
+      registerCommand: (
+        name: string,
+        options: { handler: (args: string, ctx: Ctx) => Promise<void> },
+      ) => {
         commands.set(name, options.handler);
       },
       registerTool: (tool: { name: string; execute: (...args: unknown[]) => Promise<unknown> }) => {
         tools.set(tool.name, tool.execute);
       },
-      getAllTools: () => ["read", "grep", "find", "ls", "bash", "request_edit"].map((name) => ({ name })),
+      getAllTools: () =>
+        ["read", "grep", "find", "ls", "bash", "request_edit"].map((name) => ({ name })),
       setActiveTools: (names: string[]) => activeTools.push(names),
-      exec: (command: string, args: string[], options?: { timeout?: number }) => ctx.exec(command, args, options),
+      exec: (command: string, args: string[], options?: { timeout?: number }) =>
+        ctx.exec(command, args, options),
     };
 
     extension(fakeApi as never);
@@ -123,9 +84,17 @@ describe("createHitsExtension", () => {
     await handlers.get("session_start")?.({}, ctx);
     await commands.get("mode")?.("build", ctx);
     await commands.get("depth")?.("paragraph", ctx);
-    const promptResult = handlers.get("before_agent_start")?.({ systemPrompt: "base" }, ctx) as { systemPrompt: string };
+    const promptResult = handlers.get("before_agent_start")?.({ systemPrompt: "base" }, ctx) as {
+      systemPrompt: string;
+    };
 
-    const bashResult = (await tools.get("bash")?.("id", { command: "pwd", timeout: 2000 }, undefined, undefined, ctx)) as {
+    const bashResult = (await tools.get("bash")?.(
+      "id",
+      { command: "pwd", timeout: 2000 },
+      undefined,
+      undefined,
+      ctx,
+    )) as {
       details: { approved: boolean };
     };
     const requestEditResult = (await tools.get("request_edit")?.(
@@ -134,7 +103,9 @@ describe("createHitsExtension", () => {
       undefined,
       undefined,
       ctx,
-    )) as { details: { handoffResponse: string; workspaceChanged: boolean; after?: { status: string } } };
+    )) as {
+      details: { handoffResponse: string; workspaceChanged: boolean; after?: { status: string } };
+    };
 
     expect(activeTools).toEqual([
       ["read", "grep", "find", "ls", "bash"],
@@ -153,7 +124,7 @@ describe("createHitsExtension", () => {
   });
 
   it("denies request_edit when not in build mode", async () => {
-    const state: HitsState = { mode: "plan", depth: "outline" };
+    const state: State = { mode: "plan", depth: "outline" };
     const extension = createHitsExtension(state);
     const tools = new Map<string, (...args: unknown[]) => Promise<unknown>>();
 

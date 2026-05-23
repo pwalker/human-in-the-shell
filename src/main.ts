@@ -8,11 +8,16 @@ import {
   InteractiveMode,
   SessionManager,
 } from "@earendil-works/pi-coding-agent";
-import { createHitsExtension, createHitsState, PLAN_MODE_TOOLS } from "./hits-extension.js";
+import { createHitsExtension } from "./extension.js";
+import { createHitsState, PLAN_MODE_TOOLS } from "./policy.js";
 
 const hitsState = createHitsState();
 
-const createRuntime: CreateAgentSessionRuntimeFactory = async ({ cwd, sessionManager, sessionStartEvent }) => {
+const createRuntime: CreateAgentSessionRuntimeFactory = async ({
+  cwd,
+  sessionManager,
+  sessionStartEvent,
+}) => {
   const services = await createAgentSessionServices({
     cwd,
     resourceLoaderOptions: {
