@@ -6,9 +6,14 @@ type Ctx = {
   hasUI: boolean;
   ui: {
     setStatus: (key: string, text: string | undefined) => void;
+    setHeader: (factory: unknown) => void;
     notify: (message: string, type?: string) => void;
     confirm: (title: string, message: string) => Promise<boolean>;
     select: (title: string, options: string[]) => Promise<string | undefined>;
+    theme: {
+      bold: (text: string) => string;
+      fg: (color: string, text: string) => string;
+    };
   };
   exec: (
     command: string,
@@ -60,6 +65,7 @@ describe("createHitsExtension", () => {
       hasUI: true,
       ui: {
         setStatus: (key, text) => statuses.push({ key, text }),
+        setHeader: () => undefined,
         notify: (message) => notices.push(message),
         confirm: async (_title, message) => {
           confirmCalls.push(message);
@@ -68,6 +74,10 @@ describe("createHitsExtension", () => {
         select: async (_title, options) => {
           selectCalls.push(options.join("|"));
           return "Done";
+        },
+        theme: {
+          bold: (text) => `<b>${text}</b>`,
+          fg: (_color, text) => text,
         },
       },
       exec: async (command, args, options) => {
@@ -111,7 +121,10 @@ describe("createHitsExtension", () => {
       ["read", "grep", "find", "ls", "bash"],
       ["read", "grep", "find", "ls", "bash", "request_edit"],
     ]);
-    expect(statuses.at(-1)).toEqual({ key: "hits", text: "HITS build / paragraph" });
+    expect(statuses.at(-1)).toEqual({
+      key: "hits",
+      text: "hits - mode:<b>build</b> / depth:<b>paragraph</b>",
+    });
     expect(promptResult.systemPrompt).toContain("HITS BUILD MODE");
     expect(confirmCalls).toEqual(["pwd"]);
     expect(bashResult.details.approved).toBe(true);
@@ -149,9 +162,14 @@ describe("createHitsExtension", () => {
         hasUI: true,
         ui: {
           setStatus: () => undefined,
+          setHeader: () => undefined,
           notify: () => undefined,
           confirm: async () => true,
           select: async () => "Done",
+          theme: {
+            bold: (text) => text,
+            fg: (_color, text) => text,
+          },
         },
         exec: async () => ({ stdout: "", stderr: "", code: 0 }),
       } as Ctx,

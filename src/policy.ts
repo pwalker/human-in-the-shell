@@ -17,7 +17,7 @@ export function createHitsState(): State {
 }
 
 export function formatHitsStatus(state: State): string {
-  return `HITS ${state.mode} / ${state.depth}`;
+  return `hits - mode:${state.mode} / depth:${state.depth}`;
 }
 
 export function parseMode(input: string): Mode | undefined {

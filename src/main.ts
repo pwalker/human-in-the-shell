@@ -13,6 +13,9 @@ import {
 import { createHitsExtension } from "./extension.js";
 import { createHitsState, PLAN_MODE_TOOLS } from "./policy.js";
 
+process.env.PI_SKIP_VERSION_CHECK = "1";
+process.env.PI_OFFLINE = "1";
+
 const hitsState = createHitsState();
 
 const createRuntime: CreateAgentSessionRuntimeFactory = async ({

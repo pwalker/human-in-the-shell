@@ -20,7 +20,7 @@ describe("createHitsState", () => {
 describe("formatHitsStatus", () => {
   it("formats footer status text", () => {
     const state: State = { mode: "build", depth: "skeleton" };
-    expect(formatHitsStatus(state)).toBe("HITS build / skeleton");
+    expect(formatHitsStatus(state)).toBe("hits - mode:build / depth:skeleton");
   });
 });
 
