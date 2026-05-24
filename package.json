@@ -8,6 +8,10 @@
     "cli",
     "pi"
   ],
+  "homepage": "https://github.com/pwalker/human-in-the-shell#readme",
+  "bugs": {
+    "url": "https://github.com/pwalker/human-in-the-shell/issues"
+  },
   "license": "MIT",
   "author": "Peter Walker",
   "repository": {
@@ -48,11 +52,5 @@
     "typescript": "^6.0.3",
     "vitest": "^4.1.6"
   },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "^11.1.1",
-      "onFail": "download"
-    }
-  }
+  "packageManager": "pnpm@11.1.2"
 }
