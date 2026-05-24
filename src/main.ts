@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import {
   type AgentSessionRuntime,
   type CreateAgentSessionRuntimeFactory,
