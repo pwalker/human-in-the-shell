@@ -2,7 +2,6 @@ import type { ExtensionContext, ExtensionFactory } from "@earendil-works/pi-codi
 import { Type } from "typebox";
 import {
   buildSystemPromptForState,
-  formatHitsStatus,
   getToolsForMode,
   parseDepth,
   parseMode,
@@ -12,7 +11,12 @@ import { executeApprovedBash } from "./approved-bash.js";
 import { executeRequestEdit } from "./handoff.js";
 
 function applyStatus(ctx: ExtensionContext, state: State): void {
-  ctx.ui.setStatus("hits", formatHitsStatus(state));
+  const theme = ctx.ui.theme;
+  const quiet = (text: string): string => theme.fg("dim", text);
+  ctx.ui.setStatus(
+    "hits",
+    `${quiet("hits - mode:")}${theme.bold(state.mode)}${quiet(" / depth:")}${theme.bold(state.depth)}`,
+  );
 }
 
 export function createHitsExtension(state: State): ExtensionFactory {
@@ -24,6 +28,10 @@ export function createHitsExtension(state: State): ExtensionFactory {
     };
 
     pi.on("session_start", (_event, ctx) => {
+      ctx.ui.setHeader((_tui, theme) => ({
+        render: () => [theme.fg("accent", "hits")],
+        invalidate() {},
+      }));
       applyModeTools(ctx);
     });
     pi.on("agent_start", (_event, ctx) => {

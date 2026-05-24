@@ -45,6 +45,10 @@ When the agent wants to make some changes to files, it can't do that.  What it c
 /depth full       # complete desired code to be written from the agent
 ```
 
+## Pi
+
+This project uses the [pi SDK](https://pi.dev/docs/latest/sdk) under the hood.  What that means is that it ought to do a lot of what vanilla `pi` does.  While I've overwritten the bash tool to request approval before every command, I don't know `pi` well enough to know if I'm missing some best practices or guardrails.  Do your own research, etc. to determine if this is something you should use on your system.
+
 ## Related works
 
 - [Slow Mode](https://blog.val.town/slow-mode)
