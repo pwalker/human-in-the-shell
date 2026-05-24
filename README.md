@@ -1,12 +1,12 @@
 # human-in-the-shell
 
-A thin CLI wrapper around [Pi](https://pi.dev) for Human-in-the-Shell coding workflows.  A key difference between this agent and any others you might be used to is that this one doesn't have tools to allow it to write or edit files.
+A thin CLI wrapper around [Pi](https://pi.dev) for Human-in-the-Shell coding workflows. A key difference between this agent and any others you might be used to is that this one doesn't have tools to allow it to write or edit files.
 
 ## Why?
 
-I built this experiment because I wanted to different way of working with AI tools when I'm developing.  There are plenty of nice things about AI agents whether it's help when planning, researching a codebase, or summarizing what's going on.  However, I often myself want to be closer to the code.  This tool helps me do just that, it _won't_ write anything for me!
+I built this experiment because I wanted to different way of working with AI tools when I'm developing. There are plenty of nice things about AI agents whether it's help when planning, researching a codebase, or summarizing what's going on. However, I often myself want to be closer to the code. This tool helps me do just that, it _won't_ write anything for me!
 
-So far, my personal results have been encouraging.  I find that a cycle develops where I don't need to specify as much in the prompts (since I'm getting specific when I write the code), and then the agent can keep me on track towards my goals from whatever tangent I go down.  This back and forth goes one step further than "human-in-the-loop" and I'm calling it "human-in-the-shell".
+So far, my personal results have been encouraging. I find that a cycle develops where I don't need to specify as much in the prompts (since I'm getting specific when I write the code), and then the agent can keep me on track towards my goals from whatever tangent I go down. This back and forth goes one step further than "human-in-the-loop" and I'm calling it "human-in-the-shell".
 
 ## Installing
 
@@ -26,7 +26,7 @@ This starts a regular `pi` instance in interactive mode (the TUI).
 
 ### Mode
 
-`hits` provides a pretty regular Plan / Build mode split.  Some tools are only available in "build" mode, like `request_edit`
+`hits` provides a pretty regular Plan / Build mode split. Some tools are only available in "build" mode, like `request_edit`
 
 ```
 /mode plan   # a regular planning mode to discuss, inspect, and chat with the model
@@ -35,7 +35,7 @@ This starts a regular `pi` instance in interactive mode (the TUI).
 
 ### Depth
 
-When the agent wants to make some changes to files, it can't do that.  What it can do however is call the `request_edit` tool.  This tool-call will describe to _you_, via the terminal, what changes to make.  How verbose the agent is when describing what to change is controlled by the "depth".
+When the agent wants to make some changes to files, it can't do that. What it can do however is call the `request_edit` tool. This tool-call will describe to _you_, via the terminal, what changes to make. How verbose the agent is when describing what to change is controlled by the "depth".
 
 ```
 /depth sentence   # a single sentence describe what edits to make
@@ -47,7 +47,7 @@ When the agent wants to make some changes to files, it can't do that.  What it c
 
 ## Pi
 
-This project uses the [pi SDK](https://pi.dev/docs/latest/sdk) under the hood.  What that means is that it ought to do a lot of what vanilla `pi` does.  While I've overwritten the bash tool to request approval before every command, I don't know `pi` well enough to know if I'm missing some best practices or guardrails.  Do your own research, etc. to determine if this is something you should use on your system.
+This project uses the [pi SDK](https://pi.dev/docs/latest/sdk) under the hood. What that means is that it ought to do a lot of what vanilla `pi` does. While I've overwritten the bash tool to request approval before every command, I don't know `pi` well enough to know if I'm missing some best practices or guardrails. Do your own research, etc. to determine if this is something you should use on your system.
 
 ## Related works
 
