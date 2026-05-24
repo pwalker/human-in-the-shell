@@ -1,6 +1,6 @@
 {
   "name": "@peterw-xyz/human-in-the-shell",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A command line coding agent that keeps the human writing code.",
   "keywords": [
     "agent",
