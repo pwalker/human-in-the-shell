@@ -31,7 +31,7 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "verify": "pnpm run fmt:check && pnpm run lint && pnpm run test && pnpm run check-types",
-    "release": "changeset publish"
+    "release": "pnpm publish -r"
   },
   "dependencies": {
     "@earendil-works/pi-ai": "^0.75.4",
