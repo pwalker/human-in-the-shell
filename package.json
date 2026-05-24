@@ -1,11 +1,12 @@
 {
-  "name": "human-in-the-shell",
+  "name": "@peterw-xyz/human-in-the-shell",
   "version": "0.0.1",
-  "description": "",
+  "description": "A command line coding agent that keeps the human writing code.",
   "keywords": [],
   "license": "ISC",
-  "author": "",
+  "author": "Peter Walker",
   "type": "module",
+  "bin": { "hits": "./dist/main.js" },
   "scripts": {
     "dev": "tsx src/main.ts",
     "build": "tsc -p tsconfig.json",
@@ -37,5 +38,6 @@
       "version": "^11.1.1",
       "onFail": "download"
     }
-  }
+  },
+  "files": ["dist"]
 }
